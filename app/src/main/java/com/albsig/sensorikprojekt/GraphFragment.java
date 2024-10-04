@@ -7,12 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.albsig.sensorikprojekt.databinding.FragmentGraphBinding;
 
 public class GraphFragment extends Fragment {
 
 private FragmentGraphBinding binding;
+private SensorsViewModel sensorsViewModel;
 
     @Override
     public View onCreateView(
@@ -21,6 +23,7 @@ private FragmentGraphBinding binding;
     ) {
 
       binding = FragmentGraphBinding.inflate(inflater, container, false);
+      sensorsViewModel = new ViewModelProvider(requireActivity()).get(SensorsViewModel.class);
       return binding.getRoot();
 
     }
