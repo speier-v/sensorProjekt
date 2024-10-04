@@ -5,12 +5,13 @@ plugins {
 
 android {
     namespace 'com.albsig.sensorikprojekt'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.albsig.sensorikprojekt"
         minSdk 24
-        targetSdk 33
+        //noinspection EditedTargetSdkVersion
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
