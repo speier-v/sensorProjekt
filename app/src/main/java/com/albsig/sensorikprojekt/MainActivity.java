@@ -16,6 +16,8 @@ private ActivityMainBinding binding;
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        loadFragment(TextOutputFragment.class);
+
         binding.btnTextOutput.setOnClickListener(view -> loadFragment(TextOutputFragment.class));
 
         binding.btnGraph.setOnClickListener(view -> loadFragment(GraphFragment.class));
@@ -24,7 +26,7 @@ private ActivityMainBinding binding;
     private void loadFragment(Class fragmentClass) {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.fragment_container_view, fragmentClass, null)
+                .replace(R.id.fragment_container_view, fragmentClass, null)
                 .commit();
     }
 }
