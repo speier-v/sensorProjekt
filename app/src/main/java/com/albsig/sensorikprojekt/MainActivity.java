@@ -4,13 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,42 +15,33 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.albsig.sensorikprojekt.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SensorsViewModel sensorsViewModel;
     private MicrophoneSensorReader micReader;
+    private GyroSensorReader gyroReader;
     private GpsSensorReader gpsReader;
     private static final int REQUEST_PERMISSIONS = 1;
     public static int notificationId = 0;
-    private SensorManager sensorManager;
-    private Sensor gyroscopeSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //Viewmodel
         sensorsViewModel = new ViewModelProvider(this).get(SensorsViewModel.class);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        //Bind view
         setContentView(binding.getRoot());
-
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.fragment_container_view, TextOutputFragment.class, null)
-                .commit();
-
-        getGyroCopter();
+        //standard view
         loadFragment(TextOutputFragment.class);
-
+        //click listener for navigation
         binding.btnTextOutput.setOnClickListener(view -> loadFragment(TextOutputFragment.class));
-
         binding.btnGraph.setOnClickListener(view -> loadFragment(GraphFragment.class));
 
         requestPermissions();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
-
-
     }
 
     @SuppressLint("NewApi")
@@ -72,45 +58,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         notificationManager.createNotificationChannel(channel);
     }
 
-    private void getGyroCopter() {
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        // Gyroskop-Sensor abrufen
-        if (sensorManager != null) {
-            gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            System.out.println("Gyroskop-Daten:\nX: " + x + "\nY: " + y + "\nZ: " + z);
-        }
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        // Sensor-Updates registrieren
-        if (gyroscopeSensor != null) {
-            sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+        gyroReader.gyroRegisterListener();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Sensor-Updates abmelden
-        sensorManager.unregisterListener(this);
+        gyroReader.gyroUnregisterListener();
     }
 
     private void loadFragment(Class fragmentClass) {
@@ -176,5 +133,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         micReader.startMonitoring();
         gpsReader = new GpsSensorReader(this, sensorsViewModel);
         gpsReader.startMonitoring();
+        gyroReader = new GyroSensorReader(this, sensorsViewModel);
+        gyroReader.gyroRegisterListener();
     }
 }
