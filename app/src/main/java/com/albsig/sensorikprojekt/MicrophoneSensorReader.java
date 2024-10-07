@@ -1,5 +1,6 @@
 package com.albsig.sensorikprojekt;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
@@ -8,9 +9,7 @@ import android.media.MediaRecorder;
 import android.util.Log;
 import android.Manifest;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import java.util.ArrayList;
+import androidx.core.app.NotificationCompat;
 import java.util.List;
 
 public class MicrophoneSensorReader {
@@ -95,6 +94,21 @@ public class MicrophoneSensorReader {
         }
         double mean = (double) sum / read;
         double result = 10 * Math.log10(mean);
+
+        if (result > 25) {
+            Log.d(TAG, "Prepare to send notification");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ChannelID")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle("Lautstärke Alarm")
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText("Gemessene Lautstärke beträgt: "+result))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            Log.d(TAG, "Finish setting up NotificationCompat Builder");
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(MainActivity.notificationId, builder.build());
+            Log.d(TAG, "Sent notification with id: "+MainActivity.notificationId);
+            MainActivity.notificationId += 1;
+        }
 
         return result;
     }

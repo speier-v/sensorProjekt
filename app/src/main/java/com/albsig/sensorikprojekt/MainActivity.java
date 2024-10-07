@@ -1,10 +1,14 @@
 package com.albsig.sensorikprojekt;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private MicrophoneSensorReader micReader;
     private GpsSensorReader gpsReader;
     private static final int REQUEST_PERMISSIONS = 1;
+    public static int notificationId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,23 @@ public class MainActivity extends AppCompatActivity {
         binding.btnGraph.setOnClickListener(view -> loadFragment(GraphFragment.class));
 
         requestPermissions();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel();
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private void createNotificationChannel() {
+        String channelId = "ChannelID";
+        CharSequence channelName = "Notification";
+        String channelDescription = "Channel";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        channel.setDescription(channelDescription);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
     private void loadFragment(Class fragmentClass) {
@@ -51,12 +73,14 @@ public class MainActivity extends AppCompatActivity {
         String[] permissions = {
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.POST_NOTIFICATIONS
         };
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
         } else {
             startSensors();
