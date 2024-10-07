@@ -95,7 +95,7 @@ public class MicrophoneSensorReader {
         double mean = (double) sum / read;
         double result = 10 * Math.log10(mean);
 
-        if (result > 25) {
+        if (result > 10) {
             Log.d(TAG, "Prepare to send notification");
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ChannelID")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)

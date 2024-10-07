@@ -44,4 +44,6 @@
     </string>
     <string name="text_output">Textausgabe</string>
     <string name="graph">Diagramm</string>
+    <string name="gyroscope">Gyroskop</string>
+    <string name="microphone">Mikrofon</string>
 </resources>

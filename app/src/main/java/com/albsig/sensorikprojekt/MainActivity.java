@@ -6,9 +6,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -18,23 +20,30 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.albsig.sensorikprojekt.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private ActivityMainBinding binding;
     private SensorsViewModel sensorsViewModel;
     private MicrophoneSensorReader micReader;
     private GpsSensorReader gpsReader;
     private static final int REQUEST_PERMISSIONS = 1;
     public static int notificationId = 0;
+    private SensorManager sensorManager;
+    private Sensor gyroscopeSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         sensorsViewModel = new ViewModelProvider(this).get(SensorsViewModel.class);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.fragment_container_view, TextOutputFragment.class, null)
+                .commit();
+
+        getGyroCopter();
         loadFragment(TextOutputFragment.class);
 
         binding.btnTextOutput.setOnClickListener(view -> loadFragment(TextOutputFragment.class));
@@ -45,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
+
+
     }
 
     @SuppressLint("NewApi")
@@ -59,6 +70,47 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
+    }
+
+    private void getGyroCopter() {
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        // Gyroskop-Sensor abrufen
+        if (sensorManager != null) {
+            gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            System.out.println("Gyroskop-Daten:\nX: " + x + "\nY: " + y + "\nZ: " + z);
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Sensor-Updates registrieren
+        if (gyroscopeSensor != null) {
+            sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Sensor-Updates abmelden
+        sensorManager.unregisterListener(this);
     }
 
     private void loadFragment(Class fragmentClass) {

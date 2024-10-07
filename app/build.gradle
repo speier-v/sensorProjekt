@@ -73,4 +73,5 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-beta01")
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
