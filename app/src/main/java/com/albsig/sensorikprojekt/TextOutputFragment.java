@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.albsig.sensorikprojekt.databinding.FragmentTextOutputBinding;
 
+import java.util.List;
+
 public class TextOutputFragment extends Fragment {
 
     private FragmentTextOutputBinding binding;
@@ -29,7 +31,9 @@ public class TextOutputFragment extends Fragment {
 
       sensorsViewModel.getTextData().observe(getViewLifecycleOwner(), textList -> {
           StringBuilder formattedText = new StringBuilder();
-          for (String text : textList) {
+          int start = Math.max(textList.size() - 40, 0);
+          List<String> recentTexts = textList.subList(start, textList.size());
+          for (String text : recentTexts) {
               formattedText.append(text).append("\n");
           }
           textView.setText(formattedText.toString());

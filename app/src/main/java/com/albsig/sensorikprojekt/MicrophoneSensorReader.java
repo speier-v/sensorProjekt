@@ -19,8 +19,8 @@ public class MicrophoneSensorReader {
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
-    private static final int INTERVAL_MS = 2000; //alle 2 Sekunden
-    private static List<String> readings = new ArrayList<>();
+    private static final int INTERVAL_MS = 2000;
+    private static List<String> readings = SensorsViewModel.sensorValuesList;
 
     private AudioRecord audioRecord;
     private boolean isMonitoring;
@@ -68,7 +68,7 @@ public class MicrophoneSensorReader {
                         if (!String.valueOf(decibelLevel).contains("Infinity")) {
                             // Buffer für die Anfangswerte, wenn -Infinity als Dezibel gemessen werden
                             readings.add("Mikrophone-Level: "+String.valueOf(decibelLevel));
-                            viewModel.setTextData(readings);
+                            viewModel.setTextData();
                         }
 
                         try {
@@ -88,19 +88,6 @@ public class MicrophoneSensorReader {
         monitoringThread.start();
     }
 
-    public void stopMonitoring() {
-        isMonitoring = false;
-        Log.d(TAG, "Stop monitoring");
-
-        if (monitoringThread != null) {
-            try {
-                monitoringThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private double calculateDecibelLevel(short[] buffer, int read) {
         long sum = 0;
         for (int i = 0; i < read; i++) {
@@ -110,16 +97,5 @@ public class MicrophoneSensorReader {
         double result = 10 * Math.log10(mean);
 
         return result;
-    }
-
-    public boolean checkMicrophonePermission() {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void requestMicrophonePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
-        if (checkMicrophonePermission()) {
-            startMonitoring();
-        }
     }
 }
