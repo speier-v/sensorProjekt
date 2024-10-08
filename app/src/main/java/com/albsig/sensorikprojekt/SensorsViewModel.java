@@ -1,25 +1,15 @@
 package com.albsig.sensorikprojekt;
-
-import android.os.Build;
-import android.provider.SyncStateContract;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class SensorsViewModel extends ViewModel {
     private static final String TAG = "ViewModel";
-    private static final int LIST_SIZE_MAX = 25;
+    private static final int LIST_SIZE_MAX = 50;
     private final Helpers helpers = new Helpers();
 
     private final MutableLiveData<ArrayList<String>> textData = new MutableLiveData<>();

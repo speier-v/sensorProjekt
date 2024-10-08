@@ -78,7 +78,7 @@ public class GraphFragment extends Fragment {
         dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
         LineData lineData = new LineData(dataSet);
         binding.gyroscopeX.setData(lineData);
-        binding.gpsLat.getDescription().setEnabled(false);
+        binding.gyroscopeX.getDescription().setEnabled(false);
         binding.gyroscopeX.invalidate();
     }
 
@@ -97,9 +97,9 @@ public class GraphFragment extends Fragment {
         dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
         dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
         LineData lineData = new LineData(dataSet);
-        binding.gyroscopeX.setData(lineData);
-        binding.gpsLat.getDescription().setEnabled(false);
-        binding.gyroscopeX.invalidate();
+        binding.gyroscopeY.setData(lineData);
+        binding.gyroscopeY.getDescription().setEnabled(false);
+        binding.gyroscopeY.invalidate();
     }
 
     private void setGyroZChart(ArrayList<GyroSensorModel> gyroData) {
@@ -117,9 +117,9 @@ public class GraphFragment extends Fragment {
         dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
         dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
         LineData lineData = new LineData(dataSet);
-        binding.gyroscopeX.setData(lineData);
-        binding.gpsLat.getDescription().setEnabled(false);
-        binding.gyroscopeX.invalidate();
+        binding.gyroscopeZ.setData(lineData);
+        binding.gyroscopeZ.getDescription().setEnabled(false);
+        binding.gyroscopeZ.invalidate();
     }
 
     private void setGPSCharts() {
@@ -146,9 +146,9 @@ public class GraphFragment extends Fragment {
         dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
         dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
         LineData lineData = new LineData(dataSet);
-        binding.gpsLat.setData(lineData);
-        binding.gpsLat.getDescription().setEnabled(false);
-        binding.gpsLat.invalidate();
+        binding.gpsLong.setData(lineData);
+        binding.gpsLong.getDescription().setEnabled(false);
+        binding.gpsLong.invalidate();
     }
 
     private void setGPSLatChart(ArrayList<GpsSensorModel> gpsData) {
@@ -166,9 +166,9 @@ public class GraphFragment extends Fragment {
         dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
         dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
         LineData lineData = new LineData(dataSet);
-        binding.gpsLong.setData(lineData);
+        binding.gpsLat.setData(lineData);
         binding.gpsLat.getDescription().setEnabled(false);
-        binding.gpsLong.invalidate();
+        binding.gpsLat.invalidate();
     }
 
     @Override
