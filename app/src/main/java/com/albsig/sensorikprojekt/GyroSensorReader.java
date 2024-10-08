@@ -1,5 +1,6 @@
 package com.albsig.sensorikprojekt;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -8,6 +9,8 @@ import android.hardware.SensorManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,21 @@ public class GyroSensorReader {
 
                     GyroSensorModel gyro = new GyroSensorModel(x,y,z);
                     viewModel.setGyroData(gyro);
+
+                    if(x > 7 || y > 7 || z > 7) {
+                        Log.d(TAG, "Prepare to send notification");
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ChannelID")
+                                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                                .setContentTitle("CRAZY ALERT!!!")
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText("You are crazy man !!!!"))
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        Log.d(TAG, "Finish setting up NotificationCompat Builder");
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(MainActivity.notificationId, builder.build());
+                        Log.d(TAG, "Sent notification with id: " + MainActivity.notificationId);
+                        MainActivity.notificationId += 1;
+                    }
                 }
             }
 
