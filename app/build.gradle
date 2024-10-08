@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.albsig.sensorikprojekt"
-        minSdk 24
+        minSdk 30
         //noinspection EditedTargetSdkVersion
         targetSdk 35
         versionCode 1

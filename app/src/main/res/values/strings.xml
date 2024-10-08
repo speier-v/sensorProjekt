@@ -46,4 +46,7 @@
     <string name="graph">Diagramm</string>
     <string name="gyroscope">Gyroskop</string>
     <string name="microphone">Mikrofon</string>
+    <string name="y">Y:</string>
+    <string name="x">X:</string>
+    <string name="z">Z:</string>
 </resources>

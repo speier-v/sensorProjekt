@@ -19,7 +19,6 @@ public class MicrophoneSensorReader {
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
     private static final int INTERVAL_MS = 2000;
-    private static List<String> readings = SensorsViewModel.sensorValuesList;
 
     private AudioRecord audioRecord;
     private boolean isMonitoring;
@@ -66,8 +65,8 @@ public class MicrophoneSensorReader {
                         Log.d(TAG, "Current Noise Level: " + decibelLevel + " dB");
                         if (!String.valueOf(decibelLevel).contains("Infinity")) {
                             // Buffer für die Anfangswerte, wenn -Infinity als Dezibel gemessen werden
-                            readings.add("Mikrophone-Level: "+String.valueOf(decibelLevel));
-                            viewModel.setTextData();
+                            MicrophoneSensorModel microphoneSensorModel = new MicrophoneSensorModel(decibelLevel);
+                            viewModel.setMicrophoneData(microphoneSensorModel);
                         }
 
                         try {
@@ -95,7 +94,7 @@ public class MicrophoneSensorReader {
         double mean = (double) sum / read;
         double result = 10 * Math.log10(mean);
 
-        if (result > 10) {
+        if (result > 25) {
             Log.d(TAG, "Prepare to send notification");
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ChannelID")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)

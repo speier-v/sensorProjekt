@@ -21,7 +21,6 @@ public class GpsSensorReader implements LocationListener {
     private static final String TAG = "GpsSensorReader";
     private static final long MIN_TIME_MS = 5000;
     private static final float MIN_DISTANCE = 0;
-    private static List<String> readings = SensorsViewModel.sensorValuesList;
 
     private final LocationManager locationManager;
     private final SensorsViewModel sensorsViewModel;
@@ -33,7 +32,6 @@ public class GpsSensorReader implements LocationListener {
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    @SuppressLint("MissingPermission")
     public void startMonitoring() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -53,18 +51,15 @@ public class GpsSensorReader implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        String s = "Location updated: " + location.getLatitude() + ", " + location.getLongitude();
+        GpsSensorModel gpsSensorModel = new GpsSensorModel(location.getLongitude(), location.getLatitude());
+        String s = "Location updated:" + "Long:" + gpsSensorModel.getLongitude() + ", Lat: " + gpsSensorModel.getLatitude();
         Log.d(TAG, s);
-        readings.add(s);
-        sensorsViewModel.setTextData();
+        sensorsViewModel.setGpsData(gpsSensorModel);
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) { }
+    public void onProviderEnabled(@NonNull String provider) { }
 
     @Override
-    public void onProviderEnabled(String provider) { }
-
-    @Override
-    public void onProviderDisabled(String provider) { }
+    public void onProviderDisabled(@NonNull String provider) { }
 }

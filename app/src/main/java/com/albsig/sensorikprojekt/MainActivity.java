@@ -39,12 +39,9 @@ public class MainActivity extends AppCompatActivity {
         binding.btnGraph.setOnClickListener(view -> loadFragment(GraphFragment.class));
 
         requestPermissions();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel();
-        }
+        createNotificationChannel();
     }
 
-    @SuppressLint("NewApi")
     private void createNotificationChannel() {
         String channelId = "ChannelID";
         CharSequence channelName = "Notification";

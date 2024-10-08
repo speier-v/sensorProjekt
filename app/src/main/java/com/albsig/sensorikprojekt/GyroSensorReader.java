@@ -9,11 +9,11 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GyroSensorReader {
     private static final String TAG = "GyroSensorReader";
-    private static List<String> readings = SensorsViewModel.sensorValuesList;
 
     private final Context context;
     private final SensorsViewModel viewModel;
@@ -55,6 +55,9 @@ public class GyroSensorReader {
                     float x = event.values[0];
                     float y = event.values[1];
                     float z = event.values[2];
+
+                    GyroSensorModel gyro = new GyroSensorModel(x,y,z);
+                    viewModel.setGyroData(gyro);
                 }
             }
 
