@@ -19,12 +19,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:textAlignment="center"
             android:textSize="20sp"
-            android:text="@string/graph"/>
+            android:text="@string/gps"/>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/gps_long"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_gps"
@@ -33,7 +33,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/gps_lat"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gps_long"
@@ -63,7 +63,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/gyroscope_x"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_gyroscope"
@@ -72,7 +72,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/gyroscope_y"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gyroscope_x"
@@ -81,7 +81,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/gyroscope_z"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gyroscope_y"
@@ -111,7 +111,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/microphone"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_microphone"
