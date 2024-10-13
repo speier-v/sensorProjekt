@@ -42,7 +42,7 @@
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_1"
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gps_lat"
@@ -90,7 +90,7 @@
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_2"
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gyroscope_z"

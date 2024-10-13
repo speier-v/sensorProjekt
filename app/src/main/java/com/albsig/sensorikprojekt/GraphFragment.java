@@ -1,6 +1,7 @@
 package com.albsig.sensorikprojekt;
 
 import android.content.Context;
+import android.media.AudioRecord;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.albsig.sensorikprojekt.databinding.FragmentGraphBinding;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -24,9 +24,19 @@ import java.util.ArrayList;
 public class GraphFragment extends Fragment {
 
     private static final String TAG = "Graph";
-    private FragmentGraphBinding binding;
+    public static FragmentGraphBinding binding;
     private SensorsViewModel sensorsViewModel;
     private Context context;
+    private boolean isMonitoring;
+    private Thread monitoringThread;
+    private static final int INTERVAL_MS = 5000;
+
+    private LineDataSet gyroXChart;
+    private LineDataSet gyroYChart;
+    private LineDataSet gyroZChart;
+    private LineDataSet gpsLongChart;
+    private LineDataSet gpsLatChart;
+    private LineDataSet micChart;
 
     @Override
     public View onCreateView(
@@ -50,6 +60,7 @@ public class GraphFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setGyroCharts();
         setGPSCharts();
+        setMicrophoneCharts();
     }
 
     private void setGyroCharts() {
@@ -73,10 +84,10 @@ public class GraphFragment extends Fragment {
             Log.d(TAG, "time: " + time + "     x " + val);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Gyroscope-X");
-        dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
-        dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
-        LineData lineData = new LineData(dataSet);
+        gyroXChart = new LineDataSet(entries, "Gyroscope-X");
+        gyroXChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        gyroXChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(gyroXChart);
         binding.gyroscopeX.setData(lineData);
         binding.gyroscopeX.getDescription().setEnabled(false);
         binding.gyroscopeX.invalidate();
@@ -93,10 +104,10 @@ public class GraphFragment extends Fragment {
             Log.d(TAG, "time: " + time + "     y " + val);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Gyroscope-Y");
-        dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
-        dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
-        LineData lineData = new LineData(dataSet);
+        gyroYChart = new LineDataSet(entries, "Gyroscope-Y");
+        gyroYChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        gyroYChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(gyroYChart);
         binding.gyroscopeY.setData(lineData);
         binding.gyroscopeY.getDescription().setEnabled(false);
         binding.gyroscopeY.invalidate();
@@ -113,10 +124,10 @@ public class GraphFragment extends Fragment {
             Log.d(TAG, "time: " + time + "     z " + val);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Gyroscope-Z");
-        dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
-        dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
-        LineData lineData = new LineData(dataSet);
+        gyroZChart = new LineDataSet(entries, "Gyroscope-Z");
+        gyroZChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        gyroZChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(gyroZChart);
         binding.gyroscopeZ.setData(lineData);
         binding.gyroscopeZ.getDescription().setEnabled(false);
         binding.gyroscopeZ.invalidate();
@@ -142,10 +153,10 @@ public class GraphFragment extends Fragment {
             //Log.d(TAG, "time :" + time + "      longitude" + longitude);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "GPS-Longitude");
-        dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
-        dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
-        LineData lineData = new LineData(dataSet);
+        gpsLongChart = new LineDataSet(entries, "GPS-Longitude");
+        gpsLongChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        gpsLongChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(gpsLongChart);
         binding.gpsLong.setData(lineData);
         binding.gpsLong.getDescription().setEnabled(false);
         binding.gpsLong.invalidate();
@@ -162,13 +173,42 @@ public class GraphFragment extends Fragment {
             //Log.d(TAG, "time :" + time + "      latitude" + latitude);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "GPS-Latitude");
-        dataSet.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
-        dataSet.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
-        LineData lineData = new LineData(dataSet);
+        gpsLatChart = new LineDataSet(entries, "GPS-Latitude");
+        gpsLatChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        gpsLatChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(gpsLatChart);
         binding.gpsLat.setData(lineData);
         binding.gpsLat.getDescription().setEnabled(false);
         binding.gpsLat.invalidate();
+    }
+
+    private void setMicrophoneCharts() {
+        ArrayList<MicrophoneSensorModel> micData = sensorsViewModel.getMicrophoneData().getValue();
+        if (micData == null) {
+            return;
+        }
+        setMicrophoneChart(micData);
+    }
+
+    private void setMicrophoneChart(ArrayList<MicrophoneSensorModel> micData) {
+        Log.d(TAG, "Create Microphone chart");
+        ArrayList<Entry> entries = new ArrayList<>();
+
+        for (MicrophoneSensorModel micModel : micData) {
+            float decibel = micModel.getDb().floatValue();
+            float time = (float) micModel.getTime().toEpochSecond(ZoneOffset.UTC);
+            entries.add(new Entry(time, decibel));
+            Log.d(TAG, "time :" + time + "      decibel" + decibel);
+        }
+
+        micChart = new LineDataSet(entries, "Microphone");
+        micChart.setColor(ContextCompat.getColor(context , android.R.color.holo_blue_dark));
+        micChart.setValueTextColor(ContextCompat.getColor(context, android.R.color.black));
+        LineData lineData = new LineData(micChart);
+
+        binding.microphone.setData(lineData);
+        binding.microphone.getDescription().setEnabled(false);
+        binding.microphone.invalidate();
     }
 
     @Override

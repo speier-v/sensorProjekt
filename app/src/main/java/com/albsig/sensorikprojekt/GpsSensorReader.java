@@ -3,6 +3,7 @@ package com.albsig.sensorikprojekt;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,6 +15,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 import java.util.List;
 
@@ -54,6 +56,22 @@ public class GpsSensorReader implements LocationListener {
         GpsSensorModel gpsSensorModel = new GpsSensorModel(location.getLongitude(), location.getLatitude());
         String s = "Location updated:" + "Long:" + gpsSensorModel.getLongitude() + ", Lat: " + gpsSensorModel.getLatitude();
         Log.d(TAG, s);
+
+        if (location.getLongitude() > 100 || location.getLatitude() > 100) {
+            Log.d(TAG, "Prepare to send notification");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ChannelID")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle("Location Notification")
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText("Longitude: "+location.getLongitude()+" Latitude: "+location.getLatitude()))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            Log.d(TAG, "Finish setting up NotificationCompat Builder");
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(MainActivity.notificationId, builder.build());
+            Log.d(TAG, "Sent notification with id: "+MainActivity.notificationId);
+            MainActivity.notificationId += 1;
+        }
+
         sensorsViewModel.setGpsData(gpsSensorModel);
     }
 

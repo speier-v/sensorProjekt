@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
     }
 
+    @SuppressLint("NewApi")
     private void createNotificationChannel() {
         String channelId = "ChannelID";
         CharSequence channelName = "Notification";
