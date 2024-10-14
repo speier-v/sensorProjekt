@@ -10,7 +10,7 @@ import java.util.Objects;
 public class SensorsViewModel extends ViewModel {
 
     private static final String TAG = "ViewModel";
-    private static final int LIST_SIZE_MAX = 50;
+    private static final int LIST_SIZE_MAX = 500;
     private final Helpers helpers = new Helpers();
 
     private final MutableLiveData<ArrayList<String>> textData = new MutableLiveData<>();

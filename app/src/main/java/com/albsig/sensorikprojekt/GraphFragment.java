@@ -89,10 +89,13 @@ public class GraphFragment extends Fragment {
         Log.d(TAG, "Create Gyro-X chart");
         ArrayList<Entry> entries = new ArrayList<>();
 
+        long startTime = gyroData.get(0).getTime().toEpochSecond(ZoneOffset.UTC);
+
         for (GyroSensorModel gpsModel : gyroData) {
             float val = gpsModel.getX();
             float time = (float) gpsModel.getTime().toEpochSecond(ZoneOffset.UTC);
-            entries.add(new Entry(time, val));
+            float relativeTime = (time - startTime);
+            entries.add(new Entry(relativeTime, val));
             Log.d(TAG, "time: " + time + "     x " + val);
         }
 
@@ -109,10 +112,13 @@ public class GraphFragment extends Fragment {
         Log.d(TAG, "Create Gyro-Y chart");
         ArrayList<Entry> entries = new ArrayList<>();
 
+        long startTime = gyroData.get(0).getTime().toEpochSecond(ZoneOffset.UTC);
+
         for (GyroSensorModel gpsModel : gyroData) {
             float val = gpsModel.getY();
-            float time = (float) gpsModel.getTime().toEpochSecond(ZoneOffset.UTC);
-            entries.add(new Entry(time, val));
+            float time = (float) gpsModel.getTime().toEpochSecond(ZoneOffset.UTC) ;
+            float relativeTime = (time - startTime);
+            entries.add(new Entry(relativeTime, val));
             Log.d(TAG, "time: " + time + "     y " + val);
         }
 
@@ -129,10 +135,13 @@ public class GraphFragment extends Fragment {
         Log.d(TAG, "Create Gyro-Z chart");
         ArrayList<Entry> entries = new ArrayList<>();
 
+        long startTime = gyroData.get(0).getTime().toEpochSecond(ZoneOffset.UTC);
+
         for (GyroSensorModel gpsModel : gyroData) {
             float val = gpsModel.getZ();
             float time = (float) gpsModel.getTime().toEpochSecond(ZoneOffset.UTC);
-            entries.add(new Entry(time, val));
+            float relativeTime = (time - startTime);
+            entries.add(new Entry(relativeTime, val));
             Log.d(TAG, "time: " + time + "     z " + val);
         }
 
