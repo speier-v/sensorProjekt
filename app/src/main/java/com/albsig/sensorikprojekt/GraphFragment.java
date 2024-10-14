@@ -58,9 +58,21 @@ public class GraphFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setFabRefresh();
         setGyroCharts();
         setGPSCharts();
         setMicrophoneCharts();
+    }
+
+    private void setFabRefresh() {
+        binding.fabRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setGyroCharts();
+                setGPSCharts();
+                setMicrophoneCharts();
+            }
+        });
     }
 
     private void setGyroCharts() {

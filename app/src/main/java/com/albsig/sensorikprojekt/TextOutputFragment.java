@@ -16,8 +16,6 @@ import java.util.List;
 
 public class TextOutputFragment extends Fragment {
 
-    private static final String TAG = "Viewmodel";
-
     private FragmentTextOutputBinding binding;
     private SensorsViewModel sensorsViewModel;
     private TextView textView;
